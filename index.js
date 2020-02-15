@@ -134,6 +134,7 @@ app.put('/api/tasks/:id', (request, response) => {
     return task
   })
 
+  //response.status(200).end()
   response.json(tasks)
 })
 
