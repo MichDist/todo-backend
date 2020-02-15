@@ -86,7 +86,7 @@ app.get('/api/tasks/:id', (request, response) => {
 // Delete task
 app.delete('/api/tasks/:id', (request, response) => {
     const id = Number(request.params.id)
-    tasks = tasks.find(task => task.id !== id)
+    tasks = tasks.filter(task => task.id !== id)
 
     // Response
     response.status(204).end()
@@ -114,6 +114,21 @@ app.post('/api/tasks', (request, response) => {
 
     // Response
     response.json(task)
+})
+
+// Update Task
+app.put('/api/tasks/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const newTask = request.body
+
+  tasks = tasks.map(task => {
+    if(task.id === id) {
+      task = newTask
+    }
+    return task
+  })
+
+  response.json(tasks)
 })
 
 // Info
