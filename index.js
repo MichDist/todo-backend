@@ -1,5 +1,10 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
+const bodyParser = require('body-parser')
+
+app.use(cors())
+app.use(bodyParser.json())
 
 let tasks = 
     [
@@ -89,23 +94,20 @@ app.delete('/api/tasks/:id', (request, response) => {
 
 // Add task
 app.post('/api/tasks', (request, response) => {
-    const maxId = tasks.length > 0
-        ? Math.max(...tasks.map(n => n.id))
-        : 0
-    const task = request.body
+  const task = request.body
     
 
-    if(!body.content) {
+    if(!task.content) {
         return response.status(400).json({
             error: 'Content is missing'
         })
     }
 
     const newTask = {
-        id: maxId + 1,
-        content: body.content,
+        id: 10,
+        content: task.content,
         date: new Date(),
-        important: body.important || false,
+        important: task.important || false,
     }
 
     tasks = tasks.concat(newTask)
