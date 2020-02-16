@@ -141,5 +141,5 @@ app.put('/api/tasks/:id', (request, response) => {
 // Info
 
 // Define port
-const port = 3001
-app.listen(port, () => {console.log(`Server is running on port ${port}`)})
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {console.log(`Server is running on port ${PORT}`)})
