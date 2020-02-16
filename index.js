@@ -11,7 +11,7 @@ morgan.token('body', (request, response) => {
 app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan(':method :url - :body'))
-app.use(express.static('build')) // Frontend
+app.use(express.static('build')) // Return frontend
 
 let tasks = 
     [
