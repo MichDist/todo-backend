@@ -20,25 +20,25 @@ const taskSchema = new mongoose.Schema({
   })
   
   // Define model
-  const Task = mongoose.model('Task', taskSchema)
+const Task = mongoose.model('Task', taskSchema)
   
-  const task = new Task({
-    content: 'Test MongoDB',
-    date: new Date(),
-    important: true,
-  })
+const task = new Task({
+  content: 'Test App',
+  date: new Date(),
+  important: true,
+})
   
-
-  Task.find({}).then(result => {
-      result.forEach(note => {
-          console.log(task)
-      })
-      mongoose.connection.close()
-  })
 /*
+Task.find({}).then(result => {
+    result.forEach(note => {
+        console.log(task)
+    })
+    mongoose.connection.close()
+})
+*/
   task.save().then(response => {
     console.log('Task saved!')
     mongoose.connection.close()
   })
 
-  */
+  

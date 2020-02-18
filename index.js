@@ -1,8 +1,13 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const Task = require('./models/task')
+const mongoose = require('mongoose')
+
+mongoose.set('useFindAndModify', false)
 
 morgan.token('body', (request, response) => {
   return JSON.stringify(request.body)
@@ -12,6 +17,9 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan(':method :url - :body'))
 app.use(express.static('build')) // Return frontend
+
+// Unsupported Routes TODO
+
 
 let tasks = 
     [
@@ -65,6 +73,7 @@ let tasks =
       }
     ]
   
+
 // Routes
 // Root
 app.get('/', (request, response) => {
@@ -73,59 +82,77 @@ app.get('/', (request, response) => {
 
 // Get all tasks
 app.get('/api/tasks', (request, response) => {
-    response.json(tasks)
+  Task.find({}).then(tasks => {
+    response.json(tasks.map(task => task.toJSON()))     // Format with toJSON() 
+  })
 })
 
 // Get a single task by id
 app.get('/api/tasks/:id', (request, response) => {
-    const id = Number(request.params.id)            // request returns string instead of integer
-    const task = tasks.find(task => task.id === id)
-
-    // Response, check if task exists
-    if(task) {
-        response.json(task)
-    } else {
-        response.status(404).end()
+  Task.findById(request.params.id).then(task => {
+    if (task) {
+    response.json(task.toJSON())
+    } else { // No task for that id is found
+      response.status(404).end()
     }
-    
+  })
+  .catch(error => {     // ID is in wrong format
+    console.log(error)
+    response.status(400).send({error: 'Malformatted id'})
+  }) 
 })
 
 // Delete task
 app.delete('/api/tasks/:id', (request, response) => {
-    const id = Number(request.params.id)
-    tasks = tasks.filter(task => task.id !== id)
-
-    // Response
+Task.findByIdAndRemove(request.params.id)
+  .then(result => {
     response.status(204).end()
+  })
+  .catch(error => {
+    console.log(error)
+    response.status(400).send({error: 'An error occured'})
+  })
 })
 
 // Add task
 app.post('/api/tasks', (request, response) => {
   const task = request.body
     
-
     if(!task.content) {
         return response.status(400).json({
             error: 'Content is missing'
         })
     }
 
-    const newTask = {
-        id: 10,
+    const newTask = new Task({
         content: task.content,
         date: new Date(),
         important: task.important || false,
-    }
+    })
 
-    tasks = tasks.concat(newTask)
-
-    // Response
-    response.json(task)
+    newTask.save().then(savedTask => {
+      response.json(savedTask.toJSON())
+    })
 })
 
 // Update Task
 app.put('/api/tasks/:id', (request, response) => {
-  const id = Number(request.params.id)
+const body = request.body
+
+const task = {
+  content: body.content,
+  important: body.important,
+}
+
+Task.findByIdAndUpdate(request.params.id, task, { new: true})
+  .then(updatedTask => {
+    response.json(updatedTask.toJSON())
+  })
+  .catch(error => {
+    console.log(error)
+    response.status(404).end()
+  })
+/*  const id = Number(request.params.id)
   const newTask = request.body
 
   tasks = tasks.map(task => {
@@ -135,8 +162,8 @@ app.put('/api/tasks/:id', (request, response) => {
     return task
   })
 
-  //response.status(200).end()
   response.json(tasks)
+  */
 })
 
 // Info
