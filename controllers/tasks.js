@@ -1,50 +1,18 @@
-const app = require('./app') // the actual Express app
-const http = require('http')
-const config = require('./utils/config')
-
-const server = http.createServer(app)
-
-
-/*
-
-
-require('dotenv').config()
-const express = require('express')
-const app = express()
-const cors = require('cors')
-const bodyParser = require('body-parser')
-const morgan = require('morgan')
-const Task = require('./models/task')
-const mongoose = require('mongoose')
-
-mongoose.set('useFindAndModify', false)
-
-morgan.token('body', (request, response) => {
-  return JSON.stringify(request.body)
-})
-
-app.use(cors())
-app.use(bodyParser.json())
-app.use(morgan(':method :url - :body'))
-app.use(express.static('build')) // Return frontend
+const tasksRouter = require('express').Router()
+const Task = require('../models/task')
 
 // Unsupported Routes TODO
 
 // Routes
-// Root
-app.get('/', (request, response) => {
-    response.send('<h1>Hello World!</h1>')
-})
-
 // Get all tasks
-app.get('/api/tasks', (request, response) => {
+tasksRouter.get('/', (request, response) => {
   Task.find({}).then(tasks => {
     response.json(tasks.map(task => task.toJSON()))     // Format with toJSON() 
   })
 })
 
 // Get a single task by id
-app.get('/api/tasks/:id', (request, response) => {
+tasksRouter.get('/:id', (request, response) => {
   Task.findById(request.params.id).then(task => {
     if (task) {
     response.json(task.toJSON())
@@ -59,7 +27,7 @@ app.get('/api/tasks/:id', (request, response) => {
 })
 
 // Delete task
-app.delete('/api/tasks/:id', (request, response) => {
+tasksRouter.delete('/:id', (request, response) => {
 Task.findByIdAndRemove(request.params.id)
   .then(result => {
     response.status(204).end()
@@ -71,7 +39,7 @@ Task.findByIdAndRemove(request.params.id)
 })
 
 // Add task
-app.post('/api/tasks', (request, response) => {
+tasksRouter.post('/', (request, response) => {
   const task = request.body
     
     if(!task.content) {
@@ -98,7 +66,7 @@ app.post('/api/tasks', (request, response) => {
 })
 
 // Update Task
-app.put('/api/tasks/:id', (request, response) => {
+tasksRouter.put('/:id', (request, response) => {
 const body = request.body
 
 const task = {
@@ -114,7 +82,7 @@ Task.findByIdAndUpdate(request.params.id, task, { new: true})
     console.log(error)
     response.status(404).end()
   })
-//AUSKOMMENTIEREN  const id = Number(request.params.id)
+/*  const id = Number(request.params.id)
   const newTask = request.body
 
   tasks = tasks.map(task => {
@@ -125,13 +93,10 @@ Task.findByIdAndUpdate(request.params.id, task, { new: true})
   })
 
   response.json(tasks)
-  
+  */
 })
 
 // Info
 
 
-
-const PORT = process.env.PORT || 3001
-*/
-server.listen(config.PORT, () => {console.log(`Server is running on port ${config.PORT}`)})
+module.exports = tasksRouter

@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 
 // Get url from environment variable
-const url = process.env.MONGODB_URI
-
+//const url = process.env.MONGODB_URI
+/*
 // Connect to MongoDB
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(result => {
@@ -11,7 +11,7 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
     .catch((error) => {
         console.log('Error connecting to MongoDB:', error.message)
     })
-
+*/
 // Schema
 const taskSchema = new mongoose.Schema({
     content: {
