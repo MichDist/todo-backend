@@ -130,8 +130,14 @@ app.post('/api/tasks', (request, response) => {
         important: task.important || false,
     })
 
-    newTask.save().then(savedTask => {
-      response.json(savedTask.toJSON())
+    // Used promise chaining to make it loo pretty
+    newTask.save()
+      .then(savedTask => savedTask.toJSON())
+      .then(savedAndFormattedTask => {
+        response.json(savedAndFormattedTask)
+      })
+    .catch(error => {
+      console.log(error)
     })
 })
 

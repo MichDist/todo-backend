@@ -14,8 +14,15 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
 
 // Schema
 const taskSchema = new mongoose.Schema({
-    content: String,
-    date: Date,
+    content: {
+      type: String,
+      minlength: 5,
+      required: true
+    },
+    date: {
+      type: Date,
+      reqquired: true
+    },
     important: Boolean,
     subtask: Object
   })
