@@ -5,10 +5,16 @@ const Task = require('../models/task')
 
 // Routes
 // Get all tasks
-tasksRouter.get('/', (request, response) => {
+/*tasksRouter.get('/', (request, response) => {
   Task.find({}).then(tasks => {
     response.json(tasks.map(task => task.toJSON()))     // Format with toJSON() 
   })
+})
+*/
+// A version of get all tasks using async await
+tasksRouter.get('/', async (request, response) => {
+  const tasks = await Task.find({})
+  response.json(tasks.map(task => task.toJSON()))
 })
 
 // Get a single task by id
