@@ -44,7 +44,8 @@ Task.findByIdAndRemove(request.params.id)
   })
 })
 
-// Add task
+// Add task async await
+/*
 tasksRouter.post('/', (request, response) => {
   const task = request.body
     
@@ -69,6 +70,30 @@ tasksRouter.post('/', (request, response) => {
     .catch(error => {
       console.log(error)
     })
+})
+*/
+// Add task async await
+tasksRouter.post('/', async (request, response) => {
+  const task = request.body
+    
+    if(!task.content) {
+        return response.status(400).json({
+            error: 'Content is missing'
+        })
+    }
+
+    const newTask = new Task({
+        content: task.content,
+        date: new Date(),
+        important: task.important || false,
+    })
+
+    try {
+      const savedTask = await newTask.save()
+      response.json(savedTask.toJSON())
+    } catch(exception) {
+      console.log(exception)    // Change to something useful later 
+    }
 })
 
 // Update Task
